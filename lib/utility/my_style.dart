@@ -10,6 +10,8 @@ class MyStyle {
   String nameFont = 'Pattaya';
   String nameApp = 'pakk';
   
+  EdgeInsetsGeometry myPadding = EdgeInsets.all(20.0);
+
   TextStyle myWhiteTextStyle = TextStyle(color: Colors.white);
 
   ShapeBorder curveButton = RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0));

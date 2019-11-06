@@ -104,15 +104,18 @@ class _HomeState extends State<Home> {
           ),
         ),
         child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              showlogo(),
-              showAppName(),
-              userText(),
-              passwordText(),
-              showButton(),
-            ],
+          child: Container(padding: MyStyle().myPadding,
+            color: Color.fromARGB(5, 0, 0, 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                showlogo(),
+                showAppName(),
+                userText(),
+                passwordText(),
+                showButton(),
+              ],
+            ),
           ),
         ),
       ),
