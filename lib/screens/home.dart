@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pakk/screens/register.dart';
 import 'package:pakk/utility/my_style.dart';
 
 class Home extends StatefulWidget {
@@ -31,7 +32,14 @@ class _HomeState extends State<Home> {
         shape: MyStyle().curveButton,
         borderSide: BorderSide(color: MyStyle().textColor),
         child: Text('Sign Up', style: TextStyle(color: MyStyle().textColor)),
-        onPressed: () {},
+        onPressed: () {
+          print('You click Sign Up');
+
+          // Create Route Arrow Back
+          MaterialPageRoute materialPageRoute =
+              MaterialPageRoute(builder: (BuildContext context) {return Register();});
+              Navigator.of(context).push(materialPageRoute);
+        },
       ),
     );
   }
@@ -104,7 +112,8 @@ class _HomeState extends State<Home> {
           ),
         ),
         child: Center(
-          child: Container(padding: MyStyle().myPadding,
+          child: Container(
+            padding: MyStyle().myPadding,
             color: Color.fromARGB(5, 0, 0, 0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
