@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:pakk/screens/register.dart';
+import 'package:pakk/utility/my_alert.dart';
 import 'package:pakk/utility/my_style.dart';
 
 class Home extends StatefulWidget {
@@ -9,6 +12,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 // field
+  final formKey = GlobalKey<FormState>();
+  String user, password;
 
 // Method
 
@@ -21,10 +26,22 @@ class _HomeState extends State<Home> {
           'Sign in',
           style: MyStyle().myWhiteTextStyle,
         ),
-        onPressed: () {},
+        onPressed: () {
+          formKey.currentState.save();
+          print('user=$user,password=$password');
+        },
       ),
     );
   }
+
+Future<void> checkAuthen()async{
+  if ((user.isEmpty)||(password.isEmpty)) {
+    normalDialog(context, 'Have Space', 'Please fill all Every Blank');
+  } else {
+  }
+}
+  
+
 
   Widget signUpbutton() {
     return Expanded(
@@ -37,8 +54,10 @@ class _HomeState extends State<Home> {
 
           // Create Route Arrow Back
           MaterialPageRoute materialPageRoute =
-              MaterialPageRoute(builder: (BuildContext context) {return Register();});
-              Navigator.of(context).push(materialPageRoute);
+              MaterialPageRoute(builder: (BuildContext context) {
+            return Register();
+          });
+          Navigator.of(context).push(materialPageRoute);
         },
       ),
     );
@@ -65,6 +84,9 @@ class _HomeState extends State<Home> {
       width: 200.0,
       child: TextFormField(
         decoration: InputDecoration(labelText: 'User:'),
+        onSaved: (value) {
+          user = value.trim();
+        },
       ),
     );
   }
@@ -75,6 +97,9 @@ class _HomeState extends State<Home> {
       child: TextFormField(
         obscureText: true,
         decoration: InputDecoration(labelText: 'Pass:'),
+        onSaved: (value) {
+          password = value.trim();
+        },
       ),
     );
   }
@@ -115,15 +140,18 @@ class _HomeState extends State<Home> {
           child: Container(
             padding: MyStyle().myPadding,
             color: Color.fromARGB(5, 0, 0, 0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                showlogo(),
-                showAppName(),
-                userText(),
-                passwordText(),
-                showButton(),
-              ],
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  showlogo(),
+                  showAppName(),
+                  userText(),
+                  passwordText(),
+                  showButton(),
+                ],
+              ),
             ),
           ),
         ),
