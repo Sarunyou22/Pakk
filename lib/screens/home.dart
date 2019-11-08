@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
             // move to Myservice
             MaterialPageRoute materialPageRoute =
                 MaterialPageRoute(builder: (BuildContext context) {
-              return MyService();
+              return MyService(userModel: userModel,);
             });
             Navigator.of(context).pushAndRemoveUntil(materialPageRoute,
                 (Route<dynamic> route) {
