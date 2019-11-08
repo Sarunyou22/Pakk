@@ -1,6 +1,11 @@
-import 'dart:ffi';
+import 'dart:convert';
+
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:pakk/models/user_model.dart';
+import 'package:pakk/screens/my_service.dart';
 import 'package:pakk/screens/register.dart';
 import 'package:pakk/utility/my_alert.dart';
 import 'package:pakk/utility/my_style.dart';
@@ -14,8 +19,26 @@ class _HomeState extends State<Home> {
 // field
   final formKey = GlobalKey<FormState>();
   String user, password;
+  UserModel userModel;
 
 // Method
+  @override
+  void initState() {
+    super.initState();
+    checkInternet();
+  }
+
+//  code open program check internet
+  Future<void> checkInternet() async {
+    try {
+      var result = await InternetAddress.lookup('google.com');
+      if ((result.isNotEmpty) && (result[0].rawAddress.isNotEmpty)) {
+        print('Internet Connected');
+      }
+    } catch (e) {
+      normalDialog(context, 'Internet Fail', 'Please Check Your Internet');
+    }
+  }
 
   Widget signInbutton() {
     return Expanded(
@@ -29,19 +52,51 @@ class _HomeState extends State<Home> {
         onPressed: () {
           formKey.currentState.save();
           print('user=$user,password=$password');
+          checkAuthen();
         },
       ),
     );
   }
 
-Future<void> checkAuthen()async{
-  if ((user.isEmpty)||(password.isEmpty)) {
-    normalDialog(context, 'Have Space', 'Please fill all Every Blank');
-  } else {
-  }
-}
-  
+  Future<void> checkAuthen() async {
+    if ((user.isEmpty) || (password.isEmpty)) {
+      normalDialog(context, 'Have Space', 'Please fill all Every Blank');
+    } else {
+      // No Space
+      String url =
+          'https://www.androidthai.in.th/pint/getUserWhereUserPakk.php?isAdd=true&User=$user';
+      Response response = await get(url);
+      var result = jsonDecode(response.body);
 
+      if (result.toString() == 'null') {
+        normalDialog(context, 'User False', 'No $user in my Database');
+      } else {
+        for (var map in result) {
+          print('map = $map');
+          userModel = UserModel.fromAPI(map);
+
+          print('password $password');
+          print('True Passwird ${userModel.password}');
+
+          // check password
+          if (password == userModel.password) {
+            print('password true');
+            // move to Myservice
+            MaterialPageRoute materialPageRoute =
+                MaterialPageRoute(builder: (BuildContext context) {
+              return MyService();
+            });
+            Navigator.of(context).pushAndRemoveUntil(materialPageRoute,
+                (Route<dynamic> route) {
+              return false;
+            });
+          } else {
+            normalDialog(context, 'Password False', 'Please Try Again');
+          }
+        }
+      }
+    }
+  }
 
   Widget signUpbutton() {
     return Expanded(
@@ -83,6 +138,7 @@ Future<void> checkAuthen()async{
     return Container(
       width: 200.0,
       child: TextFormField(
+        keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(labelText: 'User:'),
         onSaved: (value) {
           user = value.trim();
@@ -95,7 +151,7 @@ Future<void> checkAuthen()async{
     return Container(
       width: 200.0,
       child: TextFormField(
-        obscureText: true,
+        obscureText: false,
         decoration: InputDecoration(labelText: 'Pass:'),
         onSaved: (value) {
           password = value.trim();
